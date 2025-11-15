@@ -1,0 +1,535 @@
+/* Responsive calculator styles */
+.calculator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.calculator {
+  /* Fullscreen calculator with responsive clamped sizes */
+  --btn-size: clamp(48px, 6.5vw, 84px);
+  --btn-font: clamp(1rem, 2.2vw, 1.4rem);
+  --display-font: clamp(1.6rem, 6vw, 3rem);
+  --btn-min-width: clamp(72px, 12vw, 140px);
+  --btn-gap: clamp(6px, 0.9vw, 12px);
+  --row-unit: var(--btn-size);
+
+  width: 100vw;
+  height: 100vh;
+  max-width: 100%;
+  background: linear-gradient(180deg, #0b1220 0%, #0f1724 100%);
+  border-radius: 0;
+  padding: clamp(12px, 2.5vw, 24px);
+  box-shadow: none;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fullscreen, background-less layout for tablets & phones */
+@media (max-width: 1024px) {
+  .calculator-container {
+    min-height: 100vh;
+    width: 100vw;
+    padding: 0 8px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .calculator {
+    /* add a visible background color on small screens */
+    background: linear-gradient(180deg, #0b1220 0%, #0f1724 100%);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 980px;
+    max-height: 94vh; /* don't exceed viewport height */
+    height: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+
+  /* Keep display compact but readable */
+  .calculator .display {
+    background: rgba(255,255,255,0.02);
+    padding: 12px 10px;
+    min-height: 64px;
+    border-radius: 8px;
+  }
+
+  /* Make button area expand and fill remaining space but allow scrolling if needed */
+  .button-grid {
+    flex: 1 1 auto;
+    align-content: start; /* prevent grid rows from being stretched apart */
+    margin-top: 8px;
+    overflow: auto;
+    padding-bottom: 8px;
+  }
+
+  /* Place engineering grid above numeric grid but don't push overall height */
+  .eng-grid {
+    order: 0;
+    margin-bottom: 6px;
+  }
+
+  /* Ensure history overlay fits inside viewport */
+  .history-panel {
+    left: 12px;
+    right: 12px;
+    top: 64px;
+    max-height: calc(94vh - 120px);
+  }
+}
+
+/* Device-targeted styles to emulate iPhone 14 proportions and good touch targets */
+@media (max-width: 420px) {
+  /* CSS reference for iPhone 14: ~390px width, ~844px height (CSS points).
+     We scale to viewport but constrain to those proportions for a native feel. */
+
+  :root {
+    --iphone-width: 390px;
+    --iphone-height: 844px;
+    --touch-size: 56px; /* target touch size */
+    --gap: 8px;
+    --display-font: 2.2rem;
+  }
+
+  .calculator-container {
+    padding: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .calculator {
+    width: min(var(--iphone-width), 96vw);
+    height: min(var(--iphone-height), 96vh);
+    max-height: 96vh;
+    padding: 12px;
+    border-radius: 28px;
+    background: linear-gradient(180deg,#0b1220 0%,#0f1724 100%);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .display {
+    min-height: 96px;
+    padding: 18px 12px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+  }
+
+  .display-value {
+    font-size: var(--display-font);
+  }
+
+  .mode-toggle {
+    margin-bottom: 8px;
+    gap: 6px;
+  }
+
+  .eng-grid {
+    gap: 6px;
+    grid-template-columns: repeat(5, 1fr);
+    margin-bottom: 8px;
+  }
+
+  .button-grid {
+    gap: var(--gap);
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: var(--touch-size);
+  }
+
+  .button {
+    border-radius: 999px; /* circular look */
+    padding: 0.35rem 0.5rem;
+    height: var(--touch-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+  }
+
+  .button-zero {
+    grid-column: span 2;
+    border-radius: 28px; /* pill shape like iPhone */
+  }
+
+  .button-equals {
+    grid-row: span 2;
+    align-self: stretch;
+    height: calc(var(--touch-size) * 2 + var(--gap));
+    border-radius: 20px;
+  }
+
+  .button-number {
+    background: #2d2d2d;
+    color: #fff;
+  }
+
+  .button-operation {
+    background: #ff9a00;
+    color: #000;
+    font-weight: 700;
+  }
+
+  /* History overlay tweaks for phone */
+  .history-panel {
+    left: 10px;
+    right: 10px;
+    top: 72px;
+    border-radius: 12px;
+    max-height: calc(96vh - 160px);
+  }
+}
+
+.display {
+  background: rgba(255,255,255,0.02);
+  border-radius: 12px;
+  padding: clamp(12px, 2.5vw, 20px);
+  margin-bottom: 12px;
+  min-height: clamp(64px, 10vh, 140px);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.display-value {
+  color: #ffffff;
+  font-size: var(--display-font);
+  font-weight: 300;
+  text-align: right;
+  word-wrap: break-word;
+  word-break: break-word;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.mode-toggle {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.mode-button {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: #2d2d2d;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.mode-button.active {
+  background: #ff9500;
+  color: #000;
+}
+
+.history-button {
+  background: #2b2b2b;
+}
+
+.history-button.active {
+  background: #ffdab3;
+}
+
+
+.history-panel {
+  /* overlay dropdown inside calculator so it doesn't change height */
+  position: absolute;
+  top: 56px; /* place under mode-toggle */
+  left: 12px;
+  right: 12px;
+  width: auto;
+  max-width: calc(100% - 24px);
+  background: #0f0f0f;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  padding: 8px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.clear-history {
+  background: transparent;
+  border: 1px solid #333;
+  color: #ddd;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.close-history {
+  background: transparent;
+  border: none;
+  color: #ddd;
+  font-size: 1.05rem;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.history-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+  max-height: 220px;
+}
+
+/* ensure overlay doesn't push other content; adjust on very small screens */
+@media (max-width: 400px) {
+  .history-panel {
+    left: 8px;
+    right: 8px;
+    top: 52px;
+    max-height: 200px;
+  }
+}
+
+.history-entry {
+  background: #171717;
+  color: #fff;
+  border: none;
+  text-align: left;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.history-expr {
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.history-res {
+  font-weight: 600;
+  color: #fff;
+}
+
+.history-empty {
+  color: #888;
+  padding: 8px;
+}
+
+.eng-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(56px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.button-scientific {
+  background: #3a3a3a;
+  color: #fff;
+  padding: 10px;
+  font-size: 0.95rem;
+}
+
+.button-scientific:hover {
+  background: #4a4a4a;
+}
+
+  .button-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(var(--btn-min-width), 1fr));
+    gap: var(--btn-gap);
+    grid-auto-rows: var(--row-unit);
+    grid-auto-flow: dense; /* allow items to fill any gaps left by spanning items */
+    align-content: start; /* prevent rows from stretching */
+  }
+
+.button {
+  border: none;
+  border-radius: 12px;
+  font-size: var(--btn-font);
+  font-weight: 600;
+  height: var(--btn-size);
+  padding: 0 12px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  box-shadow: 0 6px 14px rgba(2,6,23,0.45), inset 0 1px 0 rgba(255,255,255,0.02);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 0; /* ensure no extra spacing from margins */
+  height: 100%; /* let grid row determine height */
+}
+
+.button:active {
+  transform: translateY(1px) scale(0.995);
+  box-shadow: 0 3px 8px rgba(2,6,23,0.4);
+}
+
+.button:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.button-number {
+  background: linear-gradient(180deg,#2f2f34 0%, #26262a 100%);
+  color: #fff;
+}
+
+.button-number:hover {
+  filter: brightness(1.05);
+}
+
+.button-operation {
+  background: linear-gradient(180deg,#ffb24a 0%, #ff9500 100%);
+  color: #111;
+}
+
+.button-operation:hover {
+  filter: brightness(1.05);
+}
+
+.button-clear {
+  background: linear-gradient(180deg,#cfcfcf 0%, #9f9f9f 100%);
+  color: #000;
+}
+
+.button-equals {
+  background: linear-gradient(180deg,#ffb24a 0%, #ff7a00 100%);
+  color: #fff;
+  grid-row: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 22px rgba(255,122,0,0.18);
+  /* equals spans two grid rows (height = 2 * --row-unit) */
+}
+
+.button-zero {
+  grid-column: span 2;
+  border-radius: 999px;
+}
+
+/* When engineering mode is active, shrink numeric buttons and reduce spacing
+   so the added engineering row doesn't increase the overall calculator height. */
+.calculator.engineering {
+  /* keep width same but allow internal adjustments */
+}
+
+.calculator.engineering .display {
+  min-height: 60px;
+  padding: 12px 10px;
+}
+
+.calculator.engineering .button {
+  padding: 8px;
+  font-size: 1rem;
+}
+
+.calculator.engineering .button-number {
+  padding: 6px;
+  font-size: 0.95rem;
+}
+
+.calculator.engineering .button-scientific {
+  padding: 8px;
+  font-size: 0.85rem;
+}
+
+.calculator.engineering .button-grid {
+  gap: 6px;
+  grid-auto-rows: minmax(40px, auto);
+}
+
+.calculator.engineering .eng-grid {
+  gap: 6px;
+}
+
+/* Smaller screens */
+@media (max-width: 520px) {
+  .calculator {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .display {
+    padding: 14px 12px;
+    min-height: 64px;
+  }
+
+  .display-value {
+    font-size: clamp(1.4rem, 8vw, 2.4rem);
+  }
+
+  .button-grid {
+    grid-template-columns: repeat(4, minmax(48px, 1fr));
+    gap: 8px;
+    grid-auto-rows: minmax(44px, auto);
+  }
+
+  .button {
+    padding: 10px;
+    font-size: 1rem;
+  }
+
+  .eng-grid {
+    grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+    gap: 6px;
+  }
+
+  .button-equals {
+    grid-row: auto;
+    grid-column: span 1;
+  }
+
+  .button-zero {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 360px) {
+  .button-grid {
+    grid-template-columns: repeat(4, minmax(40px, 1fr));
+  }
+
+  .display-value {
+    font-size: clamp(1.1rem, 9vw, 2rem);
+  }
+}
+
+/* ensure buttons wrap text if necessary */
+.button, .mode-button {
+  word-break: break-word;
+}
+

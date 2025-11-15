@@ -33,7 +33,7 @@
   --row-unit: var(--btn-size);
 
   width: 100vw;
-  height: 100vh;
+  height: 95vh;
   max-width: 100%;
   background: linear-gradient(180deg, #0b1220 0%, #0f1724 100%);
   border-radius: 0;
@@ -52,7 +52,7 @@
   --btn-min-width: clamp(72px, 12vw, 140px);
 
   width: 100%;
-  height: 100%;
+  height: 95vh;
   max-width: 980px;
   background: linear-gradient(180deg, #0b1220 0%, #0f1724 100%);
   border-radius: 0;
@@ -96,6 +96,7 @@ html, body, #root {
     width: 100%;
     max-width: 980px;
     max-height: 94vh; /* don't exceed viewport height */
+      max-height: 95vh; /* increased to 95vh per layout request */
     height: auto;
     padding: 14px;
     display: flex;
@@ -115,7 +116,7 @@ html, body, #root {
   /* Make button area expand and fill remaining space but allow scrolling if needed */
   .button-grid {
     flex: 1 1 auto;
-    align-content: start; /* prevent grid rows from being stretched apart */
+    align-content: space-between; /* distribute rows with space-between */
     margin-top: 8px;
     overflow: auto;
     padding-bottom: 8px;
@@ -192,7 +193,7 @@ html, body, #root {
   .button-grid {
     gap: var(--gap);
     grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: var(--touch-size);
+    grid-auto-rows: 1fr;
     flex: 1 1 auto;
   }
 
@@ -214,7 +215,6 @@ html, body, #root {
   .button-equals {
     grid-row: span 2;
     align-self: stretch;
-    height: calc(var(--touch-size) * 2 + var(--gap));
     border-radius: 20px;
   }
 
@@ -417,9 +417,9 @@ html, body, #root {
     /* use equal-width columns so buttons expand to fill available space */
     grid-template-columns: repeat(4, 1fr);
     gap: var(--btn-gap);
-    grid-auto-rows: var(--row-unit);
+    grid-auto-rows: 1fr; /* rows share available vertical space equally */
     grid-auto-flow: dense; /* allow items to fill any gaps left by spanning items */
-    align-content: start; /* prevent rows from stretching */
+    align-content: space-between; /* distribute rows with space-between */
     width: 100%;
     flex: 1 1 auto; /* allow grid to grow and fill remaining vertical space */
   }
@@ -429,7 +429,6 @@ html, body, #root {
   border-radius: 12px;
   font-size: var(--btn-font);
   font-weight: 600;
-  height: var(--btn-size);
   padding: 0 12px;
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
@@ -521,7 +520,7 @@ html, body, #root {
 
 .calculator.engineering .button-grid {
   gap: 6px;
-  grid-auto-rows: minmax(40px, auto);
+  grid-auto-rows: 1fr;
 }
 
 .calculator.engineering .eng-grid {
@@ -547,7 +546,7 @@ html, body, #root {
   .button-grid {
     grid-template-columns: repeat(4, minmax(48px, 1fr));
     gap: 8px;
-    grid-auto-rows: minmax(44px, auto);
+    grid-auto-rows: 1fr;
     flex: 1 1 auto;
   }
 
